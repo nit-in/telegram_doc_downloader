@@ -5,8 +5,9 @@ import json
 from pathlib import Path
 import subprocess
 import config
+import time
 
-channel = config.CHANNEL
+channels = config.CHANNELS
 pages = config.PAGES
 download_dir = config.DOWNLOAD_DIR
 download_dir_path = Path(download_dir).expanduser()
@@ -59,7 +60,7 @@ def fail(txt):
 
 
 # parse json that was returned and get name, size and id for document and download it
-def parse_json(json_data):
+def parse_json(json_data, channel):
     for msg in json_data["messages"]:
         if "media" in msg:
             media_msg = msg["media"]
@@ -76,6 +77,7 @@ def parse_json(json_data):
                         msg_id = msg["id"]
                         name = str(filename.replace(" ", "_"))
                         file_size = "{:.1f}".format(size / (1024 * 1024))
+                        channel = str(channel)
                         if check_file(name, size):
                             print(
                                 f"\nalready downloaded:\nname:\t{name}\nsize:\t{file_size} MB"
@@ -86,6 +88,7 @@ def parse_json(json_data):
                                     f"\ndownload:\nname:\t{name}\nsize:\t{file_size} MB"
                                 )
                                 download(channel, name, msg_id)
+                                time.sleep(10)
                             else:
                                 print(
                                     f"\nFile size is high, skipping it:\nname:\t{name}\nsize:\t{file_size} MB"
@@ -96,19 +99,21 @@ def parse_json(json_data):
 
 
 # iterate
-for page in range(1, pages):
-    print("\n\t------------------------\t\n")
-    print(f"\nchannel:  {channel}")
-    print(f"\nPage: {page}")
-    url = config.JSON_URL + str(channel) + "/" + str(page) + "?limit=100"
-    re = requests.get(url)
-    data = json.loads(re.text)
-    # check for errors, in case of any error
-    # print out response from server and quit
-    if "errors" in data:
-        print("\n" + data["errors"][0])
-        print("\nmessage\t" + data["errors"][1]["message"])
-        print("\nfor url\t" + data["errors"][1]["url"])
-        exit()
-    else:
-        parse_json(data)
+for channel in channels:
+    for page in range(1, pages):
+        print("\n\t------------------------\t\n")
+        print(f"\nchannel:  {channel}")
+        print(f"\nPage: {page}")
+        url = config.JSON_URL + str(channel) + "/" + str(page) + "?limit=100"
+        time.sleep(10)
+        re = requests.get(url)
+        data = json.loads(re.text)
+        # check for errors, in case of any error
+        # print out response from server and quit
+        if "errors" in data:
+            print("\n" + data["errors"][0])
+            print("\nmessage\t" + data["errors"][1]["message"])
+            print("\nfor url\t" + data["errors"][1]["url"])
+            exit()
+        else:
+            parse_json(data, channel)
