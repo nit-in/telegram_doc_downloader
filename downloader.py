@@ -31,7 +31,7 @@ if failed_file.exists():
 # check if a file already exists or not in the download dir
 def check_file(name, size):
     file_name = Path(download_dir_path, name)
-    # check both file name and size
+    # check bpth file name and size
     if file_name.exists() and int(file_name.lstat().st_size) == int(size):
         return True
     else:
@@ -80,12 +80,12 @@ def parse_json(json_data, channel):
                         channel = str(channel)
                         if check_file(name, size):
                             print(
-                                f"\nalready downloaded:\nname:\t{name}\nsize:\t{file_size} MB"
+                                f"\nalready downloaded:\nname:\t{name}\nsize:\t{file_size} MB\nchannel:\t{channel}"
                             )
                         else:
                             if size <= 31457280:  # only 30 mb file size is allowed
                                 print(
-                                    f"\ndownload:\nname:\t{name}\nsize:\t{file_size} MB"
+                                    f"\ndownload:\nname:\t{name}\nsize:\t{file_size} MB\nchannel:\t{channel}"
                                 )
                                 download(channel, name, msg_id)
                                 time.sleep(10)
@@ -93,7 +93,7 @@ def parse_json(json_data, channel):
                                 print(
                                     f"\nFile size is high, skipping it:\nname:\t{name}\nsize:\t{file_size} MB"
                                 )
-                                txt = f"channel:\t{channel}\nname:\t{name}\nsize:\t{file_size} MB\n"
+                                txt = f"\nchannel:\t{channel}\nname:\t{name}\nsize:\t{file_size} MB\n"
                                 txt = txt + f"\n\t------------------------\t\n"
                                 fail(txt)
 
@@ -103,11 +103,11 @@ print("\n\t------------------------\t\n")
 print(channels)
 
 # iterate
-for channel in channels:
-    for page in range(1, pages):
+for page in range(1, pages):
+    for channel in channels:
         print("\n\t------------------------\t\n")
-        print(f"\nchannel:  {channel}")
-        print(f"\nPage: {page}")
+        print(f"\nchannel:	{channel}")
+        print(f"\nPage:	{page}")
         url = config.JSON_URL + str(channel) + "/" + str(page) + "?limit=100"
         time.sleep(10)
         re = requests.get(url)
