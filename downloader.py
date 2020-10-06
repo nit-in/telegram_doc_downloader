@@ -60,7 +60,7 @@ def fail(txt):
 
 
 # parse json that was returned and get name, size and id for document and download it
-def parse_json(json_data, channel):
+def parse_json(json_data, channel, initial_prompt):
     for msg in json_data["messages"]:
         if "media" in msg:
             media_msg = msg["media"]
@@ -87,8 +87,22 @@ def parse_json(json_data, channel):
                                 print(
                                     f"\ndownload:\nname:\t{name}\nsize:\t{file_size} MB\nchannel:\t{channel}"
                                 )
-                                download(channel, name, msg_id)
-                                time.sleep(10)
+                                if initial_prompt == "y" or initial_prompt == "Y":
+                                    download_prompt = str(
+                                        input(
+                                            f"Do you want to download the file:\t{name}\t"
+                                        )
+                                    )
+
+                                    if download_prompt == "y" or download_prompt == "Y":
+                                        download(channel, name, msg_id)
+                                        time.sleep(10)
+                                    else:
+                                        pass
+                                else:
+                                    download(channel, name, msg_id)
+                                    time.sleep(10)
+
                             else:
                                 print(
                                     f"\nFile size is high, skipping it:\nname:\t{name}\nsize:\t{file_size} MB"
@@ -101,6 +115,9 @@ def parse_json(json_data, channel):
 # print list of channels
 print("\n\t------------------------\t\n")
 print(channels)
+
+print("\n\t------------------------\t\n")
+initial_prompt = str(input(f"Do you want download prompt for every file (y or Y)?\t"))
 
 # iterate
 for page in range(1, pages):
@@ -120,4 +137,4 @@ for page in range(1, pages):
             print("\nfor url\t" + data["errors"][1]["url"])
             exit()
         else:
-            parse_json(data, channel)
+            parse_json(data, channel, initial_prompt)
