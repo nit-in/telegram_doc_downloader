@@ -35,8 +35,9 @@ if failed_file.exists():
 	failed_file.unlink()
 
 # check if a file already exists or not in the download dir
-def check_file(name, size):
-	file_name = Path(download_dir_path, name)
+def check_file(channel, name, size):
+	channel_path = Path(download_dir_path,channel)
+	file_name = Path(channel_path, name)
 	# check bpth file name and size
 	if file_name.exists() and int(file_name.lstat().st_size) == int(size):
 		return True
@@ -88,7 +89,7 @@ def parse_json(json_data, channel, initial_prompt):
 						name = str(filename.replace(" ", "_"))
 						file_size = "{:.1f}".format(size / (1024 * 1024))
 						channel = str(channel)
-						if check_file(name, size):
+						if check_file(channel, name, size):
 							print(
 								f"\nalready downloaded:\nname:\t{name}\nsize:\t{file_size} MB\nchannel:\t{channel}"
 							)
