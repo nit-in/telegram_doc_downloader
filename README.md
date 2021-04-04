@@ -26,6 +26,17 @@ chmod +x downloader.py
 ./downloader.py
 ```
 
+if you want a prompt to download every file then type y or Y and press Enter(return) key OR
+if you want to download every file without any prompt type any other key except y or Y e.g. N, n, x or X etc
+in the following prompt
+
+
+```
+Do you want download prompt for every file (y/Y for prompt OR any other key for No prompt)? 
+
+```
+
+
 ## More Info and Credits:
 
 This is inspired from [DL-Telegram-by-file-attachment](https://github.com/Mte90/DL-Telegram-by-file-attachment)
